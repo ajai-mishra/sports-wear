@@ -72,7 +72,8 @@ Signup / forgot-password OTP verification accepts the fixed mock code **`123456`
 | `pnpm lint` | ESLint |
 | `pnpm typecheck` | TypeScript, no emit |
 | `pnpm test` | Unit tests (Vitest) |
-| `pnpm test:e2e` | End-to-end/smoke tests (Playwright) |
+| `pnpm test:e2e` | End-to-end/smoke tests (Playwright), run against `pnpm dev` |
+| `pnpm test:e2e:prod` | Same E2E suite, run against a real production build (`pnpm build && pnpm start`). Requires `SESSION_SECRET` to be set in your shell first — production mode refuses to boot without it. Dev mode always renders every route dynamically, so this is the only way to catch bugs that only occur under static prerendering (e.g. a CSP nonce baked into a statically-generated page going stale — see the comment in `playwright.prod.config.ts`). Run this before any release that touches `src/app/layout.tsx`, `src/proxy.ts`, or route-level `dynamic`/`revalidate` exports. |
 
 Run `pnpm lint && pnpm typecheck && pnpm test` before opening a PR.
 

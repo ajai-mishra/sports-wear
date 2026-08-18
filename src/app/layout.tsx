@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 
 import "./globals.css";
 import { Providers } from "@/app/providers";
@@ -23,7 +24,17 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Reading headers() (the per-request nonce proxy.ts sets on every request)
+  // forces this layout — and therefore every route under it — to render
+  // dynamically instead of being statically prerendered. That's required:
+  // a statically-generated page bakes in whatever nonce existed at build
+  // time into its script tags, but proxy.ts's CSP response header carries a
+  // freshly random nonce on every request. Those two values only match when
+  // the page is rendered live per-request, so without this, browsers block
+  // every script on any static page (the homepage among them) with a CSP
+  // violation — the page renders but never hydrates, so nothing is clickable.
+  await headers();
   const categories = listCategories();
 
   return (
