@@ -1,4 +1,5 @@
 import { getOrCreateGlobalSingleton } from "@/mocks/data/global-store";
+import { categoryImageUrl } from "@/mocks/data/image-url.util";
 
 export interface Banner {
   id: string;
@@ -18,7 +19,7 @@ export const BANNERS: Banner[] = getOrCreateGlobalSingleton("banners", () => [
     subtitle: "Up to 40% off track suits, footwear, and training gear.",
     ctaLabel: "Shop the sale",
     ctaHref: "/search?onSaleOnly=true",
-    imageUrl: "https://picsum.photos/seed/banner-flash-sale/1600/700",
+    imageUrl: categoryImageUrl("cat-track-suits", 1600, 700),
     isActive: true,
     sortOrder: 0,
   },
@@ -28,7 +29,7 @@ export const BANNERS: Banner[] = getOrCreateGlobalSingleton("banners", () => [
     subtitle: "20% off running shoes, boots, and trainers for a limited time.",
     ctaLabel: "Explore footwear",
     ctaHref: "/category/footwear",
-    imageUrl: "https://picsum.photos/seed/banner-footwear/1600/700",
+    imageUrl: categoryImageUrl("cat-footwear", 1600, 700),
     isActive: true,
     sortOrder: 1,
   },
@@ -38,7 +39,7 @@ export const BANNERS: Banner[] = getOrCreateGlobalSingleton("banners", () => [
     subtitle: "Gear up young athletes for the new season.",
     ctaLabel: "Shop kids",
     ctaHref: "/category/kids-sportswear",
-    imageUrl: "https://picsum.photos/seed/banner-kids/1600/700",
+    imageUrl: categoryImageUrl("cat-kids-sportswear", 1600, 700),
     isActive: true,
     sortOrder: 2,
   },

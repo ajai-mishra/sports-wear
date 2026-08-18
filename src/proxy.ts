@@ -32,7 +32,7 @@ function buildContentSecurityPolicy(nonce: string): string {
     // here. Inline style injection is a much lower-severity vector than inline
     // script injection, so plain 'unsafe-inline' is the right tradeoff.
     `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' data: blob: https://picsum.photos https://fastly.picsum.photos`,
+    `img-src 'self' data: blob: https://picsum.photos https://fastly.picsum.photos https://images.unsplash.com`,
     `font-src 'self' data:`,
     `connect-src 'self'`,
     `object-src 'none'`,

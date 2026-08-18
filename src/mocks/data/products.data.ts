@@ -1,5 +1,6 @@
 import { AgeGroup, type Product, type ProductImage, type ProductVariant } from "@/types/product.types";
 import { getOrCreateGlobalSingleton } from "@/mocks/data/global-store";
+import { categoryImageUrl } from "@/mocks/data/image-url.util";
 import { createSeededRandom, pickInt } from "@/mocks/data/seeded-random.util";
 
 interface ColorOption {
@@ -674,11 +675,12 @@ const BLUEPRINTS: ProductBlueprint[] = [
   },
 ];
 
-function buildImages(productKey: string): ProductImage[] {
+function buildImages(productKey: string, categoryId: string): ProductImage[] {
+  const url = categoryImageUrl(categoryId, 1200, 1200);
   const imageCount = 4;
   return Array.from({ length: imageCount }, (_, index) => ({
     id: `${productKey}-img-${index + 1}`,
-    url: `https://picsum.photos/seed/${productKey}-${index + 1}/1200/1200`,
+    url,
     alt: `Product photo ${index + 1}`,
     sortOrder: index,
   }));
@@ -736,7 +738,7 @@ function buildProduct(blueprint: ProductBlueprint, seed: number): Product {
     shortDescription: blueprint.shortDescription,
     description: blueprint.description,
     sizeGuide: blueprint.sizeGuide,
-    images: buildImages(blueprint.key),
+    images: buildImages(blueprint.key, blueprint.categoryId),
     variants,
     rating,
     reviewCount,

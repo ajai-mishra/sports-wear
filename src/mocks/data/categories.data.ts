@@ -1,5 +1,10 @@
 import type { Category } from "@/types/category.types";
 import { getOrCreateGlobalSingleton } from "@/mocks/data/global-store";
+import { categoryImageUrl } from "@/mocks/data/image-url.util";
+
+function categoryHeroImageUrl(categoryId: string): string {
+  return categoryImageUrl(categoryId, 800, 600);
+}
 
 export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", () => [
   {
@@ -8,7 +13,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     name: "Track Suits",
     description:
       "Full-zip and pullover track suits built for warm-ups, training, and everyday wear.",
-    imageUrl: "https://picsum.photos/seed/cat-track-suits/800/600",
+    imageUrl: categoryHeroImageUrl("cat-track-suits"),
     parentId: null,
   },
   {
@@ -16,7 +21,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     slug: "jerseys-tshirts",
     name: "Jerseys & T-Shirts",
     description: "Breathable performance tees and team jerseys for training and match day.",
-    imageUrl: "https://picsum.photos/seed/cat-jerseys/800/600",
+    imageUrl: categoryHeroImageUrl("cat-jerseys-tshirts"),
     parentId: null,
   },
   {
@@ -24,7 +29,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     slug: "shorts-bottoms",
     name: "Shorts & Bottoms",
     description: "Running shorts, joggers, and compression tights for every sport.",
-    imageUrl: "https://picsum.photos/seed/cat-shorts/800/600",
+    imageUrl: categoryHeroImageUrl("cat-shorts-bottoms"),
     parentId: null,
   },
   {
@@ -32,7 +37,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     slug: "socks",
     name: "Socks",
     description: "Cushioned, moisture-wicking socks for running, football, and the gym.",
-    imageUrl: "https://picsum.photos/seed/cat-socks/800/600",
+    imageUrl: categoryHeroImageUrl("cat-socks"),
     parentId: null,
   },
   {
@@ -40,7 +45,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     slug: "footwear",
     name: "Footwear",
     description: "Running shoes, football boots, and training sneakers.",
-    imageUrl: "https://picsum.photos/seed/cat-footwear/800/600",
+    imageUrl: categoryHeroImageUrl("cat-footwear"),
     parentId: null,
   },
   {
@@ -48,7 +53,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     slug: "equipment",
     name: "Sports Equipment",
     description: "Balls, rackets, gym accessories, and training gear.",
-    imageUrl: "https://picsum.photos/seed/cat-equipment/800/600",
+    imageUrl: categoryHeroImageUrl("cat-equipment"),
     parentId: null,
   },
   {
@@ -56,7 +61,7 @@ export const CATEGORIES: Category[] = getOrCreateGlobalSingleton("categories", (
     slug: "kids-sportswear",
     name: "Kids Sportswear",
     description: "Track suits, jerseys, and footwear sized for young athletes.",
-    imageUrl: "https://picsum.photos/seed/cat-kids/800/600",
+    imageUrl: categoryHeroImageUrl("cat-kids-sportswear"),
     parentId: null,
   },
 ]);

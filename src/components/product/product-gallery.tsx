@@ -2,7 +2,7 @@
 
 import { useRef, useState, type MouseEvent } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageOff, ZoomIn } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -21,6 +21,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const [isZooming, setIsZooming] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [failedImageIds, setFailedImageIds] = useState<Set<string>>(new Set());
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selectedImage = images[selectedIndex] ?? images[0];
@@ -54,16 +55,26 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           onMouseMove={handleMouseMove}
           onClick={() => setIsLightboxOpen(true)}
         >
-          {/* Plain <img>, not next/image: the hover-zoom lens below needs the raw
-              url for a CSS background-image, which next/image's rewritten src
-              (and its lazy blur-up behavior) doesn't play well with. */}
-          <img
-            src={selectedImage.url}
-            alt={selectedImage.alt || productName}
-            loading="eager"
-            fetchPriority="high"
-            className="size-full object-cover"
-          />
+          {failedImageIds.has(selectedImage.id) ? (
+            <div className="flex size-full flex-col items-center justify-center gap-2 text-muted-foreground">
+              <ImageOff className="size-8" aria-hidden="true" />
+              <span className="text-xs">Image unavailable</span>
+            </div>
+          ) : (
+            <Image
+              src={selectedImage.url}
+              alt={selectedImage.alt || productName}
+              fill
+              priority
+              sizes="(min-width: 640px) 50vw, 100vw"
+              className="object-cover"
+              onError={() =>
+                setFailedImageIds((current) => new Set(current).add(selectedImage.id))
+              }
+            />
+          )}
+          {/* The zoom lens needs the raw upstream url for a CSS background-image,
+              which next/image's rewritten/optimized src can't be used for. */}
           {isZooming && (
             <div
               aria-hidden="true"
