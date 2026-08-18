@@ -29,7 +29,7 @@ export function SearchBar({ className }: { className?: string }) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search track suits, shoes, equipment..."
-          className="pl-9"
+          className="rounded-full border-transparent bg-muted pl-9 focus-visible:border-ring focus-visible:bg-background"
           aria-label="Search products"
         />
       </div>

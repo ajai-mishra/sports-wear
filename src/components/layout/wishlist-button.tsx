@@ -13,14 +13,14 @@ export function WishlistButton() {
     <Button
       variant="ghost"
       size="icon"
-      className="relative"
+      className="relative rounded-full bg-muted/70 hover:bg-primary hover:text-primary-foreground"
       aria-label={`Open wishlist, ${totalItems} items`}
       render={<Link href="/wishlist" />}
       nativeButton={false}
     >
       <Heart className="size-5" />
       {totalItems > 0 && (
-        <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
+        <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground ring-2 ring-background">
           {totalItems > 9 ? "9+" : totalItems}
         </span>
       )}

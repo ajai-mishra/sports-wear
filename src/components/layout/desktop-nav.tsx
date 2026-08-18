@@ -9,14 +9,14 @@ export function DesktopNav({ categories }: { categories: Category[] }) {
         <Link
           key={category.id}
           href={`/category/${category.slug}`}
-          className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="relative rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors after:absolute after:inset-x-3 after:-bottom-px after:h-0.5 after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform hover:text-foreground hover:after:scale-x-100"
         >
           {category.name}
         </Link>
       ))}
       <Link
         href="/search?onSaleOnly=true"
-        className="rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+        className="ml-1 rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/30 transition-transform hover:scale-105"
       >
         Sale
       </Link>

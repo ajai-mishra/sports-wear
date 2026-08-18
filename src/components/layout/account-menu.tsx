@@ -22,7 +22,13 @@ export function AccountMenu() {
 
   if (isLoading) {
     return (
-      <Button variant="ghost" size="icon" disabled aria-label="Account menu loading">
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled
+        aria-label="Account menu loading"
+        className="rounded-full bg-muted/70"
+      >
         <UserIcon className="size-5" />
       </Button>
     );
@@ -30,7 +36,12 @@ export function AccountMenu() {
 
   if (!user) {
     return (
-      <Button variant="ghost" size="sm" render={<Link href="/login" />} nativeButton={false}>
+      <Button
+        size="sm"
+        className="rounded-full shadow-sm shadow-primary/20"
+        render={<Link href="/login" />}
+        nativeButton={false}
+      >
         Sign in
       </Button>
     );
@@ -45,7 +56,16 @@ export function AccountMenu() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="Account menu" />}>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Account menu"
+            className="rounded-full bg-muted/70 hover:bg-primary hover:text-primary-foreground"
+          />
+        }
+      >
         <UserIcon className="size-5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
