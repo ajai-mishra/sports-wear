@@ -6,6 +6,7 @@ import { Providers } from "@/app/providers";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { ADMIN_ROUTE_PREFIX } from "@/lib/constants";
 import { listCategories } from "@/services/category.service";
 
 export const metadata: Metadata = {
@@ -34,17 +35,22 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // the page is rendered live per-request, so without this, browsers block
   // every script on any static page (the homepage among them) with a CSP
   // violation — the page renders but never hydrates, so nothing is clickable.
-  await headers();
-  const categories = listCategories();
+  const headersList = await headers();
+  // The admin panel (/admin/**) has its own sidebar shell (see
+  // src/app/admin/(protected)/layout.tsx) and must never show the
+  // storefront's announcement bar, logo, search bar, or category nav — those
+  // belong to the customer-facing storefront only.
+  const isAdminRoute = (headersList.get("x-pathname") ?? "").startsWith(ADMIN_ROUTE_PREFIX);
+  const categories = isAdminRoute ? [] : listCategories();
 
   return (
     <html lang="en" className="h-full antialiased" data-scroll-behavior="smooth">
       <body className="flex min-h-full flex-col">
         <Providers>
           <ServiceWorkerRegister />
-          <SiteHeader categories={categories} />
+          {!isAdminRoute && <SiteHeader categories={categories} />}
           <main className="flex flex-1 flex-col">{children}</main>
-          <SiteFooter categories={categories} />
+          {!isAdminRoute && <SiteFooter categories={categories} />}
         </Providers>
       </body>
     </html>

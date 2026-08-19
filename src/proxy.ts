@@ -99,6 +99,11 @@ export function proxy(request: NextRequest): NextResponse {
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
+  // Lets the root layout know which route it's rendering (Server Components
+  // have no access to usePathname) so it can skip the storefront chrome
+  // (SiteHeader/SiteFooter) on /admin/* routes, which use their own sidebar
+  // shell instead — see src/app/layout.tsx.
+  requestHeaders.set("x-pathname", pathname);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   return withSecurityHeaders(response, nonce);

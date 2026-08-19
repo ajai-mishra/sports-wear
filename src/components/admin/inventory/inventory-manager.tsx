@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { FormField } from "@/components/shared/form-field";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -28,6 +29,13 @@ import {
 import { ApiRequestError } from "@/lib/api-client";
 import { adjustInventorySchema, type AdjustInventoryInput } from "@/lib/validation/admin-inventory.schema";
 import { cn } from "@/lib/utils";
+
+type StockFilterValue = "all" | "low";
+
+const STOCK_FILTER_OPTIONS: { value: StockFilterValue; label: string }[] = [
+  { value: "all", label: "All stock levels" },
+  { value: "low", label: "Low stock only" },
+];
 
 function isLowStock(row: AdminInventoryRow): boolean {
   return row.stockQuantity <= row.reorderThreshold;
@@ -123,8 +131,24 @@ function AdjustStockDialog({ row, onOpenChange }: AdjustStockDialogProps) {
 export function InventoryManager() {
   const { data: rows, isLoading, isError } = useAdminInventoryQuery();
   const [adjustingRow, setAdjustingRow] = useState<AdminInventoryRow | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [stockFilter, setStockFilter] = useState<StockFilterValue>("all");
 
   const lowStockCount = rows?.filter(isLowStock).length ?? 0;
+
+  const filteredRows = useMemo(() => {
+    const trimmedQuery = searchQuery.trim().toLowerCase();
+    return (rows ?? []).filter((row) => {
+      const matchesQuery =
+        trimmedQuery.length === 0 ||
+        row.productName.toLowerCase().includes(trimmedQuery) ||
+        row.sku.toLowerCase().includes(trimmedQuery);
+      const matchesStock = stockFilter === "all" || isLowStock(row);
+      return matchesQuery && matchesStock;
+    });
+  }, [rows, searchQuery, stockFilter]);
+
+  const isFiltered = searchQuery.trim().length > 0 || stockFilter !== "all";
 
   return (
     <div className="space-y-4">
@@ -148,6 +172,37 @@ export function InventoryManager() {
       {isError && <p className="text-sm text-destructive">Failed to load inventory.</p>}
 
       {rows && (
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative min-w-[220px] flex-1">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search by product name or SKU..."
+              aria-label="Search inventory"
+              className="pl-9"
+            />
+          </div>
+          <Select value={stockFilter} onValueChange={(value) => value && setStockFilter(value as StockFilterValue)}>
+            <SelectTrigger className="w-[180px]" aria-label="Filter by stock level">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STOCK_FILTER_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {rows && (
         <div className="overflow-hidden rounded-xl border border-border">
           <Table>
             <TableHeader>
@@ -169,7 +224,14 @@ export function InventoryManager() {
                   </TableCell>
                 </TableRow>
               )}
-              {rows.map((row) => {
+              {rows.length > 0 && filteredRows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
+                    {isFiltered ? "No inventory matches your search or filters." : "No inventory found."}
+                  </TableCell>
+                </TableRow>
+              )}
+              {filteredRows.map((row) => {
                 const lowStock = isLowStock(row);
                 return (
                   <TableRow
