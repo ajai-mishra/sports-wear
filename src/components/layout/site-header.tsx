@@ -33,7 +33,7 @@ export function SiteHeader({ categories }: { categories: Category[] }) {
           <DesktopNav categories={categories} />
         </div>
       </div>
-      <div className="px-4 pb-3 md:hidden">
+      <div className="px-4 py-3 md:hidden">
         <SearchBar />
       </div>
       <CartDrawer />

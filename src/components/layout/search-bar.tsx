@@ -21,7 +21,7 @@ export function SearchBar({ className }: { className?: string }) {
     <form onSubmit={handleSubmit} role="search" className={cn("w-full", className)}>
       <div className="relative">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"
         />
         <Input
@@ -29,7 +29,7 @@ export function SearchBar({ className }: { className?: string }) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search track suits, shoes, equipment..."
-          className="rounded-full border-transparent bg-muted pl-9 focus-visible:border-ring focus-visible:bg-background"
+          className="h-11 rounded-full border border-border bg-muted pl-11 text-sm shadow-sm focus-visible:border-ring focus-visible:bg-background"
           aria-label="Search products"
         />
       </div>
