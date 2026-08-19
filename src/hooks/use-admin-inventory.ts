@@ -13,6 +13,7 @@ export interface AdminInventoryRow {
   productId: string;
   productName: string;
   productSlug: string;
+  categoryId: string;
   variantId: string;
   sku: string;
   size: string;

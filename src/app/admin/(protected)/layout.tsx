@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { AdminAccountMenu } from "@/components/admin/admin-account-menu";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import { AdminSidebarNav } from "@/components/admin/admin-sidebar-nav";
 import { PageContainer } from "@/components/shared/page-container";
@@ -34,19 +35,17 @@ export default async function AdminProtectedLayout({ children }: LayoutProps<"/a
         <div className="sticky top-6 flex flex-col gap-4">
           <div>
             <p className="text-sm font-semibold">Admin Panel</p>
-            <p className="text-xs text-muted-foreground">Signed in as {session.name}</p>
+            <p className="text-xs text-muted-foreground">{session.role.replaceAll("_", " ")}</p>
           </div>
+          <AdminAccountMenu name={session.name} />
           <AdminSidebarNav role={session.role} />
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col gap-4">
-        <div className="flex items-center justify-between lg:hidden">
+        <div className="flex items-center justify-between gap-2 lg:hidden">
           <AdminMobileNav role={session.role} />
-          <div className="text-right text-xs text-muted-foreground">
-            <p className="font-medium text-foreground">{session.name}</p>
-            <p>{session.role.replaceAll("_", " ")}</p>
-          </div>
+          <AdminAccountMenu name={session.name} className="w-auto" />
         </div>
         {children}
       </div>

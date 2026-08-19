@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { useAdminCategoriesQuery } from "@/hooks/use-admin-categories";
 import {
   type AdminInventoryRow,
   useAdjustInventoryMutation,
@@ -29,6 +30,8 @@ import {
 import { ApiRequestError } from "@/lib/api-client";
 import { adjustInventorySchema, type AdjustInventoryInput } from "@/lib/validation/admin-inventory.schema";
 import { cn } from "@/lib/utils";
+
+const ALL_CATEGORIES_FILTER_VALUE = "all";
 
 type StockFilterValue = "all" | "low";
 
@@ -130,8 +133,10 @@ function AdjustStockDialog({ row, onOpenChange }: AdjustStockDialogProps) {
 
 export function InventoryManager() {
   const { data: rows, isLoading, isError } = useAdminInventoryQuery();
+  const { data: categories } = useAdminCategoriesQuery();
   const [adjustingRow, setAdjustingRow] = useState<AdminInventoryRow | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState(ALL_CATEGORIES_FILTER_VALUE);
   const [stockFilter, setStockFilter] = useState<StockFilterValue>("all");
 
   const lowStockCount = rows?.filter(isLowStock).length ?? 0;
@@ -143,12 +148,15 @@ export function InventoryManager() {
         trimmedQuery.length === 0 ||
         row.productName.toLowerCase().includes(trimmedQuery) ||
         row.sku.toLowerCase().includes(trimmedQuery);
+      const matchesCategory =
+        categoryFilter === ALL_CATEGORIES_FILTER_VALUE || row.categoryId === categoryFilter;
       const matchesStock = stockFilter === "all" || isLowStock(row);
-      return matchesQuery && matchesStock;
+      return matchesQuery && matchesCategory && matchesStock;
     });
-  }, [rows, searchQuery, stockFilter]);
+  }, [rows, searchQuery, categoryFilter, stockFilter]);
 
-  const isFiltered = searchQuery.trim().length > 0 || stockFilter !== "all";
+  const isFiltered =
+    searchQuery.trim().length > 0 || categoryFilter !== ALL_CATEGORIES_FILTER_VALUE || stockFilter !== "all";
 
   return (
     <div className="space-y-4">
@@ -187,6 +195,19 @@ export function InventoryManager() {
               className="pl-9"
             />
           </div>
+          <Select value={categoryFilter} onValueChange={(value) => value && setCategoryFilter(value)}>
+            <SelectTrigger className="w-[180px]" aria-label="Filter by category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_CATEGORIES_FILTER_VALUE}>All categories</SelectItem>
+              {(categories ?? []).map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={stockFilter} onValueChange={(value) => value && setStockFilter(value as StockFilterValue)}>
             <SelectTrigger className="w-[180px]" aria-label="Filter by stock level">
               <SelectValue />

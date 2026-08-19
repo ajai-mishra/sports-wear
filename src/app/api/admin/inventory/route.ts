@@ -12,6 +12,7 @@ interface InventoryRow {
   productId: string;
   productName: string;
   productSlug: string;
+  categoryId: string;
   variantId: string;
   sku: string;
   size: string;
@@ -34,6 +35,7 @@ export async function GET(request: NextRequest) {
       productId: product.id,
       productName: product.name,
       productSlug: product.slug,
+      categoryId: product.categoryId,
       variantId: variant.id,
       sku: variant.sku,
       size: variant.size,
